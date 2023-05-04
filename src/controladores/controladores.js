@@ -12,7 +12,7 @@ const contasBanco = async function (req, res) {
         return res.status(403).json({ mensagem: 'A senha do banco informada é inválida!' })
     };
 
-    return res.status(200).send(contas);
+    return res.status(200).send();
 };
 
 const criarConta = async function (req, res) {
@@ -59,7 +59,7 @@ const criarConta = async function (req, res) {
         }
     };
     contas.push(novaConta);
-    return res.status(201).json(novaConta)
+    return res.status(201).send();
 };
 
 const atualizarConta = async function (req, res) {
@@ -85,14 +85,19 @@ const atualizarConta = async function (req, res) {
         return res.status(400).json({ mensagem: 'A senha é obrigatória!' })
     };
 
-    if (!contas[numeroConta]) {
-        return res.status(404).json({ mensagem: 'Conta bancária não encontrada!' })
+    if (conta.usuario.cpf !== cpf) {
+        return res.status(403).json({ mensagem: 'CPF da conta não é original' });
     }
 
-    if (contas.find(contas => cpf === contas.usuario.cpf)) {
+    if (contas.find(contas => cpf === contas.usuario.cpf && cpf === contas.usuario.cpf)) {
         return res.status(403).json({ mensagem: 'Já existe uma conta com o cpf informado!' })
     }
-    if (contas.find(contas => email === contas.usuario.email)) {
+
+    if (conta.usuario.email !== email) {
+        return res.status(403).json({ mensagem: 'Email da conta não é original' });
+    }
+
+    if (contas.find(contas => email === contas.usuario.email && email === contas.usuario.email)) {
         return res.status(403).json({ mensagem: 'Já existe uma conta com o email informado!' })
     }
 
@@ -100,7 +105,7 @@ const atualizarConta = async function (req, res) {
     contas[numeroConta].usuario.telefone = telefone
     contas[numeroConta].usuario.email = email
 
-    return res.status(201);
+    return res.status(201).send();
 };
 
 const excluirConta = async function (req, res) {
@@ -117,7 +122,7 @@ const excluirConta = async function (req, res) {
         return conta.numero !== Number(numeroConta);
     });
 
-    return res.status(204);
+    return res.status(204).send();
 };
 
 const depositar = async function (req, res) {
@@ -141,7 +146,7 @@ const depositar = async function (req, res) {
         valor: valor
     };
     depositos.push(deposito);
-    return res.status(201);
+    return res.status(201).send();
 
 };
 
@@ -175,7 +180,7 @@ const sacar = async function (req, res) {
     };
     saques.push(saque);
 
-    return res.status(201);
+    return res.status(201).send();
 
 };
 
@@ -219,7 +224,7 @@ const transferir = async function (req, res) {
         valor
     };
     transferencias.push(transferencia);
-    return res.status(201);
+    return res.status(201).send();
 
 };
 
