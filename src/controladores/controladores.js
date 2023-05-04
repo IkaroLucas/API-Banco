@@ -12,7 +12,7 @@ const contasBanco = async function (req, res) {
         return res.status(403).json({ mensagem: 'A senha do banco informada é inválida!' })
     };
 
-    return res.status(200).send();
+    return res.status(200).send(contas);
 };
 
 const criarConta = async function (req, res) {
@@ -85,25 +85,26 @@ const atualizarConta = async function (req, res) {
         return res.status(400).json({ mensagem: 'A senha é obrigatória!' })
     };
 
-    if (conta.usuario.cpf !== cpf) {
+    if (contas[numeroConta].usuario.cpf !== cpf) {
         return res.status(403).json({ mensagem: 'CPF da conta não é original' });
     }
 
-    if (contas.find(contas => cpf === contas.usuario.cpf && cpf === contas.usuario.cpf)) {
+    if (contas.find(contas => cpf === contas.usuario.cpf && cpf !== contas.usuario.cpf)) {
         return res.status(403).json({ mensagem: 'Já existe uma conta com o cpf informado!' })
     }
-
-    if (conta.usuario.email !== email) {
+    if (contas[numeroConta].usuario.email !== email) {
         return res.status(403).json({ mensagem: 'Email da conta não é original' });
     }
 
-    if (contas.find(contas => email === contas.usuario.email && email === contas.usuario.email)) {
+    if (contas.find(contas => email === contas.usuario.email && email !== contas.usuario.email)) {
         return res.status(403).json({ mensagem: 'Já existe uma conta com o email informado!' })
     }
 
-    contas[numeroConta].usuario.cpf = cpf
-    contas[numeroConta].usuario.telefone = telefone
-    contas[numeroConta].usuario.email = email
+    contas[numeroConta].usuario.cpf = cpf;
+    contas[numeroConta].usuario.telefone = telefone;
+    contas[numeroConta].usuario.email = email;
+    contas[numeroConta].usuario.nome = nome;
+
 
     return res.status(201).send();
 };
